@@ -1,0 +1,5 @@
+export {default as  closeeu} from "./closeeu.png"
+export {default as smile} from "./smile.png"
+export {default as teeth} from "./teeth.png"
+export {default as  thumb} from "./thumb.png"
+export {default as heart} from "./heart.png"

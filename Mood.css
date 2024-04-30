@@ -1,0 +1,13 @@
+.mood-emogi-btn {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.mood-emogi-btn.selected {
+    focus:yellow;
+}
+
+.mood-emogi-btn:not(.selected) {
+    opacity: 0.5;
+}
+
+/* Adjust any other styles you need */

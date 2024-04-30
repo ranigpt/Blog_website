@@ -1,0 +1,547 @@
+import React, { useState } from "react"
+import {auth} from "./firebaseConfig";
+import { signOut } from "firebase/auth";
+
+
+
+
+const Navbaar =()=>{
+
+    const [isLogin , setIsLogin]= useState(false)
+    function authpage (){
+       
+        window.location.href="./mainyt"
+        setIsLogin(true);
+    }
+    
+    function mainpage(){
+        signOut(auth).then(()=>{
+            alert("your are signing Out babes!!")
+        })
+        .catch((error)=>{
+            alert("your cant sign out please check your muu")
+        })
+      
+        window.location.href="/"
+        setIsLogin(true);
+    }
+   
+    return(
+        <div className="flex  bg-blue-300 justify-end border border-black">
+      <nav>
+        <ul className="flex items-center gap-3 m-3 font-sans text-2xl">
+            <li className="text-3lx">home </li>
+            <li>about </li>
+            <li>contact </li>
+            <li>{isLogin? <button onClick={authpage}>LogOut</button>:<button onClick={mainpage}>LogIn</button>}</li>
+        </ul>
+      </nav>
+        </div>
+    )
+
+}
+
+export default Navbaar;
+
+
+
+
+import React, { useState, useEffect } from "react";
+import { auth } from "./firebaseConfig";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+
+const Navbaar = () => {
+    const [isLogin, setIsLogin] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setIsLogin(true); // User is authenticated
+            } else {
+                setIsLogin(false); // User is not authenticated
+            }
+        });
+
+        return () => unsubscribe();
+    }, []); // Run effect only once on component mount
+
+    const authpage = () => {
+        window.location.href = "/mainyt";
+    };
+
+    const mainpage = () => {
+        signOut(auth)
+            .then(() => {
+                alert("You are signing out.");
+            })
+            .catch((error) => {
+                console.error("Sign out error:", error);
+                alert("Failed to sign out. Please try again.");
+            });
+    };
+
+    return (
+        <div className="flex bg-blue-300 justify-end border border-black">
+            <nav>
+                <ul className="flex items-center gap-3 m-3 font-sans text-2xl">
+                    <li className="text-3lx">home</li>
+                    <li>about</li>
+                    <li>contact</li>
+                    <li>
+                        {isLogin ? (
+                            <button onClick={mainpage}>LogOut</button>
+                        ) : (
+                            <button onClick={authpage}>LogIn</button>
+                        )}
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    );
+};
+
+export default Navbaar;
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+useEffect
+
+
+import React, { useState } from "react";
+import { useState,useEffect } from "react";
+import {auth} from "./firebaseConfig"
+import {createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged } from "firebase/auth";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import { toast } from "react-toastify";
+<ToastContainer position="top-right" theme="dark"/>
+const InputBox =()=>{
+
+    const [email , setEmail]=useState("")
+    const[password , setPassword] = useState("")
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            mainpage();
+          } else {
+            mainOut();
+          }
+        });
+    
+        // Clean up the subscription when the component unmounts
+        return () => unsubscribe();
+      }, []);
+const signinWithEmail = ()=>{
+   
+
+    signInWithEmailAndPassword(auth,email,password)
+    .then((userCredential)=>{
+        console.log("done login");
+        alert("signIn")
+        toast.success(`you are logged in Welcome`);
+        
+       
+     }).catch((error)=>{
+        alert("user not found")
+         const errorCode = error.code;
+         console.log(errorCode);
+         console.log("error accourd")
+         const errorMessage = error.message;    
+         console.log(errorMessage);
+
+    })
+}
+
+
+function mainpage (){
+    window.location.href="./mainyt";
+}
+
+function mainOut(){
+    window.location.href="/"
+}
+
+const CreacteAccount =()=>{
+    
+    // const email = document.getElementById("email").value;
+    // const password = document.getElementById("pass").value;
+    
+  
+     createUserWithEmailAndPassword(auth,email,password)
+     .then((userCredential)=>{
+        
+        alert("account Created successfully!!!!");
+        console.log("done");
+       
+     }).catch((error)=>{
+        
+         const errorCode = error.code;
+         console.log(errorCode);
+         console.log("error accourd")
+
+         const errorMessage = error.message;    
+         console.log(errorMessage);
+
+     });
+}
+
+
+// console.log(auth);
+
+
+    return (
+
+        <>
+        
+        
+        <input type="email" name="email" value={email} id="email" placeholder="Email....." className="p-2 m-1 border border-black rounded-md shadow-md hover:bg-blue-100 font-bold" onChange={(e)=>{
+            setEmail(e.target.value)
+        }}/>
+        
+
+        
+        <input type="password" name="password" value={password} id="pass" placeholder="Password....."
+        className="p-2 m-1 border border-black rounded-md shadow-md hover:bg-blue-100 font-bold"
+        onChange={(e)=>{
+            setPassword(e.target.value)
+        }}
+        
+        
+        />
+        
+
+
+        <button className="cursor-pointer w-52 h-14 " onClick={signinWithEmail}> 
+    <h1 className="w-full bg-blue-400 text-white font-semibold  border border-blue-500 rounded-md m-1 p-2">Log in</h1>
+    </button>
+
+
+
+    <button className="cursor-pointer shadow-md  rounded-md border border-black hover:border-blue-400 focus:bg-blue-200 m-1 p-2" onClick={CreacteAccount}> 
+   <h1>Create Account</h1>
+    </button>
+
+        </>
+    )
+}
+
+export default InputBox;
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+mainyt code:
+
+
+ 
+import React from "react"
+import {auth} from "./firebaseConfig";
+import { signOut,onAuthStateChanged } from "firebase/auth";
+
+
+
+function mainpage(){
+        signOut(auth).then(()=>{
+            alert("your are signing Out babes!!")
+        })
+        .catch((error)=>{
+            alert("your cant sign out please check your muu")
+        })
+      
+   
+        
+    }
+
+
+    function useProfileShow(imgElement,user){
+        const photoURL = user.photoURL
+    
+    if (photoURL) {
+        imgElement.src = photoURL
+    } else {
+        imgElement.src = "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+    }
+    }
+
+const Mainyt =()=>{
+
+    const imgElement = document.getElementById("userElement")
+
+    onAuthStateChanged(auth,(user)=>{
+        if(user){
+            const uid = user.uid;
+            console.log("singnin in")
+            useProfileShow(imgElement,user);
+        }else{
+            console.log("user is sign Out");
+          
+           
+        }
+    })
+
+
+    return (
+        <div >
+       <button className="bg-blue0-300" onClick={mainpage}>SignOut</button>
+        <div>
+            <h1>here should page come !!!!!</h1>
+
+            <img src="https://i.pinimg.com/originals/32/76/24/32762401d6c44f59320a7cecdcf85f6f.gif" alt="tom"/>
+        </div>
+
+        <div id="profile img">
+            <img id="userElement"/>
+        </div>
+        </div>
+    )
+ }
+
+ export default Mainyt
+
+
+ ================================================================================================================================================================
+
+
+ proper code maiyt profile
+
+ import React, { useState, useEffect } from "react";
+import { auth } from "./firebaseConfig";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+
+function MainPage() {
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        alert("You are signing out, babes!!");
+      })
+      .catch((error) => {
+        alert("You can't sign out. Please check your setup.");
+      });
+  };
+
+  return (
+    <div>
+      <button className="bg-blue0-300" onClick={handleSignOut}>
+        SignOut
+      </button>
+      <div>
+        <h1>Here should page come !!!!!</h1>
+        <img src="https://i.pinimg.com/originals/32/76/24/32762401d6c44f59320a7cecdcf85f6f.gif" alt="tom" />
+      </div>
+    </div>
+  );
+}
+
+const Mainyt = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        console.log("Signing in");
+        setUser(currentUser);
+        console.log(currentUser);
+      } else {
+        console.log("User is signed out");
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <div>
+      <MainPage />
+      <div id="profile-img">
+        {/* {user && (
+            <>
+          <img
+            id="userElement"
+            src={user.photoURL || "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"}
+            alt="User Profile"
+          />
+
+          {console.log(user.photoURL)}
+          <h1>{user.displayName}</h1>
+          <h1>{user.email}</h1>
+          </>
+        )} */}
+
+    {user?(
+    
+    
+     <>
+          <img
+            id="userElement"
+            src={user.photoURL || "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"}
+            alt="User Profile"
+          />
+    <h1>{`Hello friend ${user.displayName}` }</h1>
+    
+    </>)
+    
+    :(
+    
+        <>
+
+
+    
+    <h1>{`hello friend`}</h1>
+
+    {user?.photoURL && user?.displayName === null ?(
+    
+    <>
+    <div>
+        <input type="text"  value={name} placeholder="Upadte name"/>
+        <img src={""} alt="img"/>
+        {console.log("accour in sub condttion")}
+    </div>
+    
+    </>):(<>
+    <div>
+        <img src={user?.photoURL} alt="not here img"/>
+        <h1>{user?.displayName}</h1>
+        {console.log("accur")}
+        
+    </div>
+    
+    
+    </>)}
+    
+    </>
+    
+)}
+      
+      
+      
+      </div>
+    </div>
+  );
+};
+
+export default Mainyt;
+==============================================================================================================
+
+
+mood page
+
+
+import React, { useState } from 'react';
+import closeEu from './assets/closeeu.png'; // Importing the smile.png image
+import smileImage from './assets/smile.png';
+import thumb from './assets/thumb.png';
+import teeth from './assets/teeth.png';
+import heart from './assets/heart.png';
+
+const Mood = () => {
+
+    const [moodEmgbtn , setMoodEmgBtn] = useState("");
+    const [moodState , setMoodState] = useState(0)
+
+    const moodelbtn = document.getElementsByClassName("mood-emogi-btn ")
+
+    function returnMoodValueFromElementId(elementId) {
+        return Number(elementId.slice(5))
+    }
+
+    function selectMood(event){
+        const selectMoodEmojiElementId = event.currentTarget.id
+
+
+    const chosenMoodValue = returnMoodValueFromElementId(selectMoodEmojiElementId)
+    
+    setMoodState(chosenMoodValue)
+    }
+
+    for (let moodEmojiEl of moodelbtn) {
+        moodEmojiEl.addEventListener("click", selectMood)
+    }
+
+    
+  return (
+    <div className=' '>
+      <div className='flex justify-center items-center gap-4 mood-emogies'>
+        <button id="mood-1"  className='mood-emogi-btn hover:scale-125'>
+          <img src={closeEu} alt="smile" className='w-16'/> {/* Using the imported image */}
+          <h1>awful</h1>
+        </button>
+
+        <button id="mood-2" className='mood-emogi-btn hover:scale-125'>
+          <img src={smileImage} alt="smile" className='w-16'/> {/* Using the imported image */}
+          <h1>smile</h1>
+        </button>
+
+
+        <button id="mood-3" className='mood-emogi-btn hover:scale-125 ' >
+          <img src={thumb} alt="smile" className='w-20'/> {/* Using the imported image */}
+        </button>
+
+
+        <button id="mood-4" className='mood-emogi-btn hover:scale-125'>
+          <img src={teeth} alt="smile"  className='w-16'/> {/* Using the imported image */}
+        </button>
+
+
+        <button id="mood-5" className='mood-emogi-btn hover:scale-125'>
+          <img src={heart} alt="smile"  className='w-16'/> {/* Using the imported image */}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Mood;
+
+
+============================
+fetch proper
+
+ const fetchPostData = async () => {
+      try {
+        
+        const querySnapshot = await getDocs(collection(db, "usersPost"));
+        const fetchedPosts = [];
+  
+        querySnapshot.forEach((doc) => {
+          fetchedPosts.push({ id: doc.id, ...doc.data() });
+        });
+  
+        console.log("Fetched Posts:", fetchedPosts); // Log fetched data
+        setPosts(fetchedPosts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    ====================================================================
+
+    fetch correct:
+
+
+    const fetchPostData = async () => {
+
+      if (!user || !user.uid) return;
+
+
+      try {
+       
+
+        const q = query(collection(db, "usersPost"), where("uid", "==", user.uid),orderBy("timeStempAt","desc"));
+        const querySnapshot = await getDocs(q);
+        const fetchedPosts = [];
+  
+        querySnapshot.forEach((doc) => {
+          fetchedPosts.push({ id: doc.id, ...doc.data() });
+        });
+  
+        console.log("Fetched Posts:", fetchedPosts); // Log fetched data
+        setPosts(fetchedPosts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        alert("No Post yet!!")
+      }
+    };
+  
